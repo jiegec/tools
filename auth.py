@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 import yaml
 import requests
 import hashlib
@@ -18,7 +18,7 @@ def load_config(path="config/account.yaml"):
 
 
 def hex_md5_password(password):
-    password = hashlib.md5(password).hexdigest()
+    password = hashlib.md5(password.encode('utf-8')).hexdigest()
     return "{MD5_HEX}%s" % password
 
 
@@ -44,7 +44,8 @@ def go_online():
     else:
         return True
 
-if __name__ == "__main__":
+
+def main():
     try:
         if go_online():
             print("Auth succeeded")
@@ -52,3 +53,7 @@ if __name__ == "__main__":
             print("Auth failed")
     except:
         print("Auth failed")
+
+
+if __name__ == "__main__":
+    main()

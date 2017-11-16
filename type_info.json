@@ -1,0 +1,38 @@
+[
+    {
+        "path": "auth.py",
+        "line": 11,
+        "func_name": "load_config",
+        "type_comments": [
+            "(str) -> Tuple[str, str]"
+        ],
+        "samples": 1
+    },
+    {
+        "path": "auth.py",
+        "line": 20,
+        "func_name": "hex_md5_password",
+        "type_comments": [
+            "(str) -> str"
+        ],
+        "samples": 1
+    },
+    {
+        "path": "auth.py",
+        "line": 33,
+        "func_name": "go_online",
+        "type_comments": [
+            "() -> bool"
+        ],
+        "samples": 1
+    },
+    {
+        "path": "auth.py",
+        "line": 48,
+        "func_name": "main",
+        "type_comments": [
+            "() -> None"
+        ],
+        "samples": 1
+    }
+]
