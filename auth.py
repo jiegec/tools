@@ -9,7 +9,7 @@ user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1)" \
              " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36"
 
 
-def load_config(path:str="config/account.yaml") -> Tuple[str, str]:
+def load_config(path: str = "config/account.yaml") -> Tuple[str, str]:
     with open(path) as f:
         config = yaml.load(f)
         username = config["account"]["username"]
@@ -18,7 +18,7 @@ def load_config(path:str="config/account.yaml") -> Tuple[str, str]:
         return username, password
 
 
-def hex_md5_password(password:str) -> str:
+def hex_md5_password(password: str) -> str:
     password = hashlib.md5(password.encode('utf-8')).hexdigest()
     return "{MD5_HEX}%s" % password
 
