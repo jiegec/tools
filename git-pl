@@ -1,0 +1,2 @@
+#!/bin/bash
+git log --branches --graph --pretty=format:'%Cred%h%Creset %Cgreen(%cr) -%C(yellow)%d%Creset %s %C(blue)<%an>%Creset' --abbrev-commit
