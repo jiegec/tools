@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+import sys
+import os
+import subprocess
+
+excluded_dirs = []
+args = ["fswatch"]
+origin = None
+
+i = 1
+while i < len(sys.argv):
+    if sys.argv[i][0] == '-':
+        if sys.argv[i] == '--exclude':
+            excluded_dirs.append(sys.argv[i + 1])
+            args.append("-e")
+            args.append(sys.argv[i + 1])
+        i += 2
+    else:
+        if origin is None:
+            origin = sys.argv[i]
+            args.append(origin)
+        i += 1
+
+print(args)
+
+with subprocess.Popen(args, stdout=subprocess.PIPE) as proc:
+    while True:
+        file_changed = proc.stdout.readline().decode('utf-8').strip()
+        print('File {} changed'.format(file_changed))
+        cmd = 'rsync ' + ' '.join(sys.argv[1:])
+        print('Calling {}'.format(cmd))
+        os.system(cmd)
+
