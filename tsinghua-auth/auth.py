@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import yaml
 import hashlib
+import os
 from typing import Tuple
 
 import requests
@@ -29,7 +30,7 @@ user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1)" \
              " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36"
 
 
-def load_config(path: str = "config/account.yaml") -> Tuple[str, str]:
+def load_config(path: str = os.path.dirname(os.path.realpath(__file__)) + "/config/account.yaml") -> Tuple[str, str]:
     with open(path) as f:
         config = yaml.load(f)
         username = config["account"]["username"]

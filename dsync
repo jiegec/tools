@@ -1,0 +1,4 @@
+#!/bin/bash
+while sleep 1; do
+    unison -owner -terse -batch -auto -watch $1 $2
+done
