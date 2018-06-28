@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+import sys
+import os
+
+args = ["/usr/local/bin/gcc-8"]
+for arg in sys.argv[1:]:
+    if arg == '-OJD':
+        print('Optimized by Jeff Dean')
+        arg = '-O4'
+    if arg == '-Oyx':
+        print('Optimized by Yuxiang Zhang')
+        arg = '-O4'
+    args.append(arg)
+
+os.system(' '.join(args))
