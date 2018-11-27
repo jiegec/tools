@@ -33,6 +33,7 @@ int main() {
   printf("已知和未知课程的 GPA：");
   scanf("%lf", &overall_GPA);
   snprintf(ogp, sizeof(ogp), "%.2lf", overall_GPA);
+  bool found = false;
   while (1) {
     double current_GPA = known_weighted_grade_point;
     for (int i = 0; i < num_unknown_courses; i++) {
@@ -41,6 +42,7 @@ int main() {
     current_GPA /= known_score + sum_unknown_scores;
     snprintf(tmp, sizeof(tmp), "%.2lf", current_GPA);
     if (strcmp(ogp, tmp) == 0) {
+      found = true;
       printf("未知课程可能的 GPA 有：");
       for (int i = 0; i < num_unknown_courses; i++) {
         printf(" %.2lf", grades[gpa_indexes[i]]);
@@ -57,5 +59,8 @@ int main() {
     if (index < 0)
       break;
   }
+
+  if (!found)
+    printf("没有找到可能的方案\n");
   return 0;
 }
