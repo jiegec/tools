@@ -1,0 +1,62 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    local int64 pos = FTell();
+    local int a = ReadUByte(pos++);
+    local int b = ReadUByte(pos++);
+    local int c = ReadUByte(pos++);
+    while (pos < FileSize()) {
+        if (a == 0 && b == 0 && c == 1) {
+            break;
+        }
+        a = b;
+        b = c;
+        c = ReadUByte(pos++);
+    }
+    FSeek(pos);
+    pos += 3;
+    a = ReadUByte(pos++);
+    b = ReadUByte(pos++);
+    c = ReadUByte(pos++);
+    local int len = 0;
+    while (pos < FileSize()) {
+        if (a == 0 && b == 0 && c == 1) {
+            break;
+        }
+        len ++;
+        a = b;
+        b = c;
+        c = ReadUByte(pos++);
+    }
+    union {
+        UBYTE nalu[len+(pos == FileSize() ? 6 : 3)];
+        struct {
+            UBYTE forbidden_zero_bit: 1;
+            UBYTE nal_ref_idc: 2;
+            enum <ubyte> {
+                slice_non_idr = 1,
+                slice_idr = 5,
+                sei = 6,
+                sps = 7,
+                pps = 8,
+            } nal_unit_type : 5;
+        } NAL_SLICE_HEADER;
+    } NAL;
+} NALU;
+
+BigEndian();
+
+while(!FEof()) {
+    NALU nalu;
+}
