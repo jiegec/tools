@@ -1,0 +1,160 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+typedef struct {
+    CHAR    signature[3];	//"FLV"
+    UBYTE   version;
+    UBYTE   dummy : 5;
+    UBYTE   audio : 1;		//1 if audio present
+    UBYTE   dummy2 : 1;
+    UBYTE   video : 1;		//1 if video present
+    DWORD   dataoffset;		//in abs. file offset
+    DWORD   zero;		//previous tag size
+} HEADER;
+
+typedef struct {
+    UINT nalu_len; // assuming 4 bytes
+    union {
+        UBYTE nalu[nalu_len];
+        struct {
+            UBYTE forbidden_zero_bit: 1;
+            UBYTE nal_ref_idc: 2;
+            enum <ubyte> {
+                slice_non_idr = 1,
+                slice_idr = 5,
+                sei = 6,
+                sps = 7,
+                pps = 8,
+            } nal_unit_type : 5;
+        } NAL_SLICE_HEADER;
+    } NAL;
+} NALU;
+
+typedef struct {
+    UBYTE configuration_version; // always 1
+    enum <ubyte> {
+        BASELINE = 66,
+        EXTENDED = 88,
+        MAIN = 77,
+        HIGH = 100
+    } avc_level_indication;
+    UBYTE profile_compatibility;
+    UBYTE avc_level_indication;
+    UBYTE reserved1 : 6;
+    UBYTE length_size_minus_one : 2;
+    UBYTE reserved2 : 5;
+    UBYTE num_of_sps: 3;
+    local INT i;
+    for (i = 0;i < num_of_sps;i++) {
+        struct {
+            USHORT len_sps;
+            UBYTE sps[len_sps];
+        } sps;
+    }
+    UBYTE num_of_pps;
+    for (i = 0;i < num_of_pps;i++) {
+        struct {
+            USHORT len_pps;
+            UBYTE pps[len_pps];
+        } pps;
+    }
+} AVCDecoderConfigurationRecord;
+
+local UINT taglen;
+
+typedef struct {
+    enum <uint> {
+        AUDIODATA = 8,
+        VIDEODATA = 9,
+        SCRIPTDATAOBJECT = 18
+    } type : 8;
+    UINT    datasize : 24;
+    UINT    timestamp : 24;
+    UINT    timestamphi : 8;
+    UINT    streamid : 24;
+    taglen = datasize - 1;
+    Printf("tag length: %x\n",taglen);
+    if(type==AUDIODATA)	//audio
+    {
+        UINT fmt : 4;
+        UINT sr : 2;
+        UINT bits : 1;
+        UINT channels : 1;
+        if(fmt==10)
+        {
+            --taglen;
+            UBYTE frmtype;
+        }
+    }
+    else if(type==VIDEODATA)//video
+    {
+        enum <uint> {
+            KEYFRAME = 1,
+            INTER_FRAME = 2,
+            DISPOSABLE_INTER_FRAME = 3,
+            GENERATED_KEYFRAME = 4,
+            VIDEO_INFO_COMMAND_FRAME = 5
+        } frame_type : 4;
+        enum <uint> {
+            AVC = 7
+        } codecid : 4;
+        if(codecid==AVC)//avc
+        {
+            taglen -= 4;
+            enum <uint> {
+                AVC_SEQUENCE_HEADER = 0,
+                AVC_NALU = 1,
+                AVC_END_OF_SEQ = 2
+            } packet_type : 8;
+            UINT compotime : 24;
+            if (packet_type == AVC_SEQUENCE_HEADER) { // avc sequence_header
+                AVCDecoderConfigurationRecord record;
+                taglen = 0;
+            } else if (packet_type == AVC_NALU) { // avc nalu
+                while( taglen > 0) {
+                    NALU nalu;
+                    taglen -= 4;
+                    taglen -= nalu.nalu_len;
+                }
+            }
+        }
+    }
+    if (taglen > 0) {
+        UBYTE data[taglen];
+    }
+    UINT lastsize;	//last tag size
+} Tag;
+
+BigEndian();
+SetBackColor( cLtGray );
+HEADER hdr;
+
+// Check for header
+if( hdr.signature != "FLV" )
+{
+    Warning( "File is not a FLV. Template stopped." );
+    return -1;
+}
+
+if( hdr.version != 1 )
+{
+    Warning( "Unsupported FLV version. Template stopped." );
+    return -1;
+}
+
+// Define the bytes of the data
+SetBackColor( cNone );
+
+while( !FEof() )
+{
+    Tag tag;
+}
