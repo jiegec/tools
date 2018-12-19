@@ -1,0 +1,61 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+typedef struct {
+    CHAR    signature[4];	//"XCP\0"
+    CHAR    version[8];
+    DWORD   start_time;
+    DWORD   num_frames;
+    DWORD   unknown_1;
+    DWORD   start_offset;
+    DWORD   end_offset;
+    DWORD   unknown_2[3];
+    BYTE    network;
+    BYTE    network_plus;
+    WORD    unknown_3;
+    WORD    timeunit;
+    BYTE    unknown_4[3];
+    DWORD   time_lo;
+    DWORD   time_hi;
+    DWORD   line_speed;
+    BYTE    unknown_5[12];
+    BYTE    real_tick[4];
+} HEADER;
+
+typedef struct {
+    DWORD time_lo;
+    DWORD time_hi;
+    WORD orig_len;
+    WORD incl_len;
+    BYTE unknown[12];
+    BYTE channel;
+    BYTE data_rate;
+    BYTE signal_level;
+    BYTE unknown_2[13];
+    BYTE data[incl_len];
+} FRAME_V2;
+
+LittleEndian();
+HEADER hdr;
+
+if( hdr.signature != "XCP" )
+{
+    Warning( "File is not a CAP. Template stopped." );
+    return -1;
+}
+
+FSeek(hdr.start_offset);
+
+while( !FEof() )
+{
+   FRAME_V2 frame;
+}
