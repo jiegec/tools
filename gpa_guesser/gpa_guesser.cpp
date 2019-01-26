@@ -54,7 +54,8 @@ int main() {
     while (index >= 0 && gpa_indexes[index] == grades_kind) {
       gpa_indexes[index] = 0;
       index--;
-      gpa_indexes[index]++;
+      if (index >= 0)
+        gpa_indexes[index]++;
     }
     if (index < 0)
       break;
