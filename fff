@@ -2,13 +2,16 @@
 import subprocess
 import sys
 import select
+import time
 
 timeout = 1
 
 while True:
+    time_begin = time.perf_counter()
     process = subprocess.Popen(sys.argv[1:])
     result = process.wait()
-    if result:
+    time_end = time.perf_counter()
+    if result and (time_end - time_begin) < 60: # fail too fast
         print('Retrying after {}s'.format(timeout))
         if select.select([sys.stdin, ], [], [], timeout)[0]:
             timeout = 1

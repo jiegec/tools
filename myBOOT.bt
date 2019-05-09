@@ -1,0 +1,43 @@
+//------------------------------------------------
+//--- 010 Editor v9.0 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+// https://www.xilinx.com/support/documentation/sw_manuals/xilinx2018_2/ug1283-bootgen-user-guide.pdf
+typedef struct {
+    DWORD   vector_table[8]; // 0xEAFFFFFE
+    DWORD   width_detection_word; // 0xAA995566
+    DWORD   header_signature; // 0x584c4e58
+    DWORD   key_source;
+    DWORD   header_version;
+    DWORD   source_offset;
+    DWORD   fsbl_len;
+    DWORD   fsbl_load_addr;
+    DWORD   fsbl_entry_addr;
+    DWORD   total_fsbl_len;
+    DWORD   qspi_conf;
+    DWORD   header_checksum;
+    BYTE    user_defined[76];
+    DWORD   image_header_table_offset;
+    DWORD   partition_header_table_offset;
+} HEADER;
+
+
+LittleEndian();
+HEADER hdr;
+
+// Check for header
+if( hdr.header_signature != 0x584c4e58 )
+{
+    Warning( "File is not a XLNX BOOT.BIN. Template stopped." );
+    return -1;
+}
+
