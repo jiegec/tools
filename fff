@@ -16,6 +16,7 @@ while True:
         if select.select([sys.stdin, ], [], [], timeout)[0]:
             timeout = 1
             sys.stdin.read(1)
+            print('Retry at once')
         else:
             timeout = 2 * timeout
 
